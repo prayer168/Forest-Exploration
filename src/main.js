@@ -13,7 +13,9 @@ const EDGE_TURN_SPEED = 1.5;
 const WHEEL_MAX = WALK_SPEED * 1.8;
 
 const scene = new THREE.Scene();
-scene.fog = new THREE.Fog(0xc9dff0, 45, 125);
+// Dense forest closes in fast — the haze also hides the streaming boundary,
+// which sits at 80m in the worst case.
+scene.fog = new THREE.Fog(0xc9dff0, 22, 78);
 
 const camera = new THREE.PerspectiveCamera(72, window.innerWidth / window.innerHeight, 0.1, 1200);
 

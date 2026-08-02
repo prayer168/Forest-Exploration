@@ -18,6 +18,7 @@ export const G = {
   branch: prep(new THREE.CylinderGeometry(0.3, 1, 1, 5)),
   cone: prep(new THREE.ConeGeometry(1, 1, 8)),
   blob: prep(new THREE.IcosahedronGeometry(1, 0)),
+  blobHi: prep(new THREE.IcosahedronGeometry(1, 1)),
   dome: prep(new THREE.SphereGeometry(1, 8, 5)),
 };
 
@@ -71,7 +72,9 @@ function addBlobCluster(parts, rnd, cx, cy, cz, radius, color, count) {
   for (let i = 0; i < count; i++) {
     const r = radius * (0.5 + rnd() * 0.65);
     parts.push({
-      geo: G.blob,
+      // Big crowns are seen from underneath at close range, so they earn the
+      // extra facets; saplings stay cheap.
+      geo: r > 0.85 ? G.blobHi : G.blob,
       matrix: TRS(
         cx + (rnd() - 0.5) * radius * 1.1,
         cy + (rnd() - 0.5) * radius * 0.6,
@@ -277,6 +280,36 @@ function shrub(rnd, s) {
   return { parts, height: maxH + 0.5, trunkR: 0.12 };
 }
 
+// A bare standing dead trunk — what a waterlogged swamp leaves behind.
+export function buildSnag(rnd) {
+  const parts = [];
+  const h = 1.6 + rnd() * 3.4;
+  const r = 0.11 + rnd() * 0.1;
+  const wood = new THREE.Color(0x6a5f52).offsetHSL(0, (rnd() - 0.5) * 0.06, (rnd() - 0.5) * 0.16);
+  parts.push({
+    geo: G.trunkSlim,
+    matrix: TRS(0, h / 2, 0, 0, 0, (rnd() - 0.5) * 0.22, r, h, r),
+    color: wood,
+  });
+  // a few snapped-off limbs
+  const stubs = Math.floor(rnd() * 3);
+  for (let i = 0; i < stubs; i++) {
+    const a = rnd() * Math.PI * 2;
+    const len = 0.35 + rnd() * 0.7;
+    const tilt = 0.7 + rnd() * 0.6;
+    parts.push({
+      geo: G.branch,
+      matrix: TRS(
+        Math.sin(a) * len * 0.3, h * (0.45 + rnd() * 0.45), Math.cos(a) * len * 0.3,
+        Math.cos(a) * tilt, a, -Math.sin(a) * tilt,
+        r * 0.34, len, r * 0.34
+      ),
+      color: wood,
+    });
+  }
+  return { parts, height: h, trunkR: r };
+}
+
 const ARCHETYPES = [
   { fn: conifer, weight: 3, vine: true },
   { fn: broadleaf, weight: 4, vine: true },
@@ -288,10 +321,10 @@ const ARCHETYPES = [
 
 // A believable forest is mostly mid-storey and understory with a few giants.
 const SIZE_CLASSES = [
-  { weight: 5, range: [1.55, 2.15] },
-  { weight: 22, range: [1.1, 1.5] },
-  { weight: 44, range: [0.7, 1.05] },
-  { weight: 29, range: [0.4, 0.68] },
+  { weight: 7, range: [1.6, 2.3] },
+  { weight: 26, range: [1.1, 1.55] },
+  { weight: 45, range: [0.72, 1.08] },
+  { weight: 22, range: [0.45, 0.7] },
 ];
 
 function pickWeighted(list, rnd) {
