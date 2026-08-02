@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forest Adventure 森林探索</title>
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #8fc7e8; }
+  canvas { display: block; }
+  #instructions {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 8px;
+    color: #fff; background: rgba(10, 20, 10, 0.55);
+    font-family: "Microsoft JhengHei", sans-serif; text-align: center;
+    cursor: pointer; z-index: 10;
+  }
+  #instructions.hidden { display: none; }
+  #instructions h1 { margin: 0 0 4px; font-size: 28px; }
+  #instructions p { margin: 0; font-size: 15px; opacity: 0.9; }
+  #crosshair {
+    position: absolute; top: 50%; left: 50%; width: 6px; height: 6px;
+    margin: -3px 0 0 -3px; border-radius: 50%;
+    background: rgba(255, 255, 255, 0.85);
+    pointer-events: none; z-index: 5;
+  }
+</style>
+</head>
+<body>
+<div id="instructions">
+  <h1>森林探索 Forest Adventure</h1>
+  <p>方向鍵 ↑ ↓ ← → 移動 ・ 按住滑鼠左鍵拖曳環視</p>
+  <p>滑鼠移到畫面左右邊緣可轉向 ・ 滾輪前進後退</p>
+  <p style="margin-top:10px;opacity:0.75">點擊畫面開始探索</p>
+</div>
+<div id="crosshair"></div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module" src="src/main.js"></script>
+</body>
+</html>
